@@ -1,12 +1,14 @@
 import { Alert, Pressable, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useNavigation } from '@react-navigation/native'
 import { auth } from '../firebase_config';
-import { signOut } from 'firebase/auth';
-import { useEffect } from 'react';
+import { signOut, onAuthStateChanged } from 'firebase/auth';
+
 
 const HomeScreen = () => {
+
+    const navigation = useNavigation();
      
     const handleLogout = () => {
         signOut(auth)
@@ -19,7 +21,7 @@ const HomeScreen = () => {
     }
 
     useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged((user) => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (!user) {
                 navigation.replace('Login');
             }
@@ -28,12 +30,12 @@ const HomeScreen = () => {
         return () => unsubscribe();
     }, []);
 
-    const navigation = useNavigation();
+    
 
   return (
       <SafeAreaView edges={['left', 'right', 'bottom']} style={{ flex: 1 }}>
           <View style={styles.container}>
-              <Text style={styles.text}>El email es: {auth.currentUser.email}</Text>
+              <Text style={styles.text}>El email es: {auth.currentUser?.email}</Text>
 
               <Pressable style={styles.button} onPress={handleLogout}>
                   <Text style={styles.buttonText}>Logout</Text>

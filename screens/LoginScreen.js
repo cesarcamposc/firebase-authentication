@@ -1,12 +1,10 @@
-import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native'
-import React from 'react'
-import { Alert } from 'react-native';
-import { useState } from 'react';
+import { StyleSheet, Text, View, TextInput, Pressable, Alert } from 'react-native'
+import React, { useState, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { auth } from '../firebase_config';
 import { signInWithEmailAndPassword , createUserWithEmailAndPassword, onAuthStateChanged} from 'firebase/auth';
-import { useEffect } from 'react';
+
 
 const LoginScreen = () => {
 
@@ -18,25 +16,19 @@ const LoginScreen = () => {
     const handleLogin = () => {
         signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
-            const user = userCredential.user;
-            Alert.alert('User logged in:', user);
+            Alert.alert('Login exitoso', `Bienvenido: ${userCredential.user.email}`);
         })
         .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            Alert.alert('Error logging in:', errorCode, errorMessage);
+            Alert.alert('Error logging in:', error.message);
         });
     }
     const handleRegister = () => {
         createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
-            const user = userCredential.user;
-            Alert.alert('User registered:', user);
+            Alert.alert('Registro exitoso', `Bienvenido: ${userCredential.user.email}`);
         })
         .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            Alert.alert('Error registering:', errorCode, errorMessage);
+            Alert.alert('Error registering:', error.message);
         });
     }
 
@@ -44,8 +36,6 @@ const LoginScreen = () => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
                 navigation.replace('Home');
-            } else {
-                navigation.replace('Login');
             }
         });
 
